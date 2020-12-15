@@ -1,0 +1,28 @@
+{
+  "name": "miniSend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxt/types": "^2.14.11",
+    "@nuxtjs/axios": "^5.12.2",
+    "core-js": "^3.6.5",
+    "global": "^4.4.0",
+    "nuxt": "^2.14.6"
+  },
+  "devDependencies": {
+    "@nuxt/types": "~2.14.0",
+    "@nuxtjs/tailwindcss": "^3.1.0"
+  },
+  "config": {
+    "nuxt": {
+      "host": "0.0.0.0",
+      "port": "3000"
+    }
+  }
+}

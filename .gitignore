@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+vendor/
+node-modules/
+docker-compose.override.yml
+.yarn_cache/*
+!.yarn_cache/.gitkeep
+*.cache
+.env

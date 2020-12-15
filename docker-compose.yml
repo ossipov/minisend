@@ -1,0 +1,56 @@
+version: "3.2"
+
+services:
+  api:
+    extends:
+      file: docker-compose.base.yml
+      service: api
+    ports:
+      - "80:80"
+    environment:
+      APP_ENV: "production"
+      XDEBUG_CONFIG: 'remote_enable=0'
+    depends_on:
+      - redis
+      - ui
+
+  ui:
+    extends:
+      file: docker-compose.base.yml
+      service: ui
+    ports:
+      - '3000:3000'
+    entrypoint: ['sh', '-c']
+    command: ["yarn start"]
+
+  redis:
+    extends:
+      file: docker-compose.base.yml
+      service: redis
+
+  mariadb:
+    extends:
+      file: docker-compose.base.yml
+      service: mariadb
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+  mailhog:
+    extends:
+      file: docker-compose.base.yml
+      service: mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+volumes:
+  yarn_cache:
+networks:
+  devnet:
+    driver: "bridge"

@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+echo ''
+echo '███╗░░░███╗██╗███╗░░██╗██╗░██████╗███████╗███╗░░██╗██████╗░'
+echo '████╗░████║██║████╗░██║██║██╔════╝██╔════╝████╗░██║██╔══██╗'
+echo '██╔████╔██║██║██╔██╗██║██║╚█████╗░█████╗░░██╔██╗██║██║░░██║'
+echo '██║╚██╔╝██║██║██║╚████║██║░╚═══██╗██╔══╝░░██║╚████║██║░░██║'
+echo '██║░╚═╝░██║██║██║░╚███║██║██████╔╝███████╗██║░╚███║██████╔╝'
+echo '╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝╚═╝╚═════╝░╚══════╝╚═╝░░╚══╝╚═════╝░'
+
+echo '💌 🅼🅸🅽🅸🆂🅴🅽🅳 | ' "$@"
+
+COMPOSE="docker-compose"
+
+echo ''
+
+if [ $# -gt 0 ]; then
+  # Let's build the project
+  if [ "build" == "$1" ]; then shift 1
+    # Checking if composer got the dependencies
+    if [ ! -d "./api/vendor" ]; then
+      if [ ! -f ".env" ]; then
+        cp .env.example .env
+        cp .env.example ./api/.env
+      fi
+      $COMPOSE up -d --build
+      $COMPOSE exec api sh -c "chmod -R ug+rwx storage bootstrap/cache \
+        && chown -R php:php storage bootstrap/cache \
+        && composer install \
+        && php artisan key:generate"
+    fi
+    CONTAINERS_RUNNING=$($COMPOSE ps -q ui | wc -l)
+    if [ "$CONTAINERS_RUNNING" -gt 0 ]; then
+      $COMPOSE down --remove-orphans
+    fi
+    $COMPOSE run --rm ui "yarn install"
+    $COMPOSE run --rm ui "yarn build"
+    $COMPOSE up -d
+    $COMPOSE exec api sh -c "composer install"
+
+  elif [ "dev" == "$1" ]; then shift 1
+    CONTAINERS_RUNNING=$($COMPOSE ps -q | wc -l)
+    if [ "$CONTAINERS_RUNNING" -gt 0 ]; then
+      $COMPOSE down --remove-orphans
+    fi
+    $COMPOSE -f ./docker-compose.dev.yml up -d "$@"
+
+  elif [ "up" == "$1" ]; then shift 1
+    CONTAINERS_RUNNING=$($COMPOSE ps -q | wc -l)
+    if [ "$CONTAINERS_RUNNING" -gt 0 ]; then
+      $COMPOSE down --remove-orphans "$@"
+    fi
+    $COMPOSE up -d "$@"
+
+  elif [ "down" == "$1" ]; then shift 1
+    $COMPOSE down --remove-orphans "$@"
+
+  elif [ "art" == "$1" ]; then shift 1
+    export APP_ENV=local
+    PHP_VER=$(php --version  3> /dev/null)
+    if [[ $PHP_VER = PHP* ]]; then
+      export DB_HOST=127.0.0.1
+      php api/artisan "$@"
+    else
+      $COMPOSE exec api php artisan "$@"
+    fi
+
+  elif [ "composer" == "$1" ]; then shift 1
+    $COMPOSE exec api composer "$@"
+
+  else
+    $COMPOSE "$@"
+  fi
+else
+  $COMPOSE ps
+fi
+echo ''

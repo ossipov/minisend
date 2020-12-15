@@ -1,0 +1,43 @@
+version: '3.2'
+
+services:
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    volumes:
+      - './api:/www'
+      - './ui/static:/www/static'
+    networks:
+      - devnet
+
+  ui:
+    build:
+      context: ui
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - 'yarn_cache:/home/node/.cache/yarn'
+      - './ui:/usr/src/app'
+    networks:
+      - devnet
+
+  redis:
+    image: 'redis:alpine'
+    volumes:
+      - './.data/redis:/data'
+    networks:
+      - devnet
+
+  mariadb:
+    image: 'mariadb:10'
+    restart: always
+    volumes:
+      - './.data/mariadb:/var/lib/mysql'
+    networks:
+      - devnet
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    networks:
+      - devnet
