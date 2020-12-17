@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return [];
 });
+
+Route::post('/mail', [MailController::class, 'store']);
+Route::get('/mail', [MailController::class, 'index']);
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
