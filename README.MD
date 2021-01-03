@@ -20,7 +20,11 @@ Mail sending app based on Laravel & Nuxt
 git clone https://github.com/ossipov/minisend 
 cd minisend
 chmod +x run
+```
+App will try to run on port :80 
+Please stop any service that is occupying that port before build.
 
+```sh
 # Getting dependencies and spinning up the project for the first time
 ./run build
 

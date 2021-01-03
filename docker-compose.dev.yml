@@ -5,7 +5,7 @@ services:
       file: docker-compose.base.yml
       service: api
     ports:
-      - '80:80'
+      - '${APP_PORT}:80'
     environment:
       XDEBUG_CONFIG: 'remote_host=${REMOTE_HOST} remote_enable=1'
       PHP_IDE_CONFIG: 'serverName=MiniSend'
