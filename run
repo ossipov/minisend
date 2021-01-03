@@ -26,7 +26,8 @@ if [ $# -gt 0 ]; then
       $COMPOSE exec api sh -c "chmod -R ug+rwx storage bootstrap/cache \
         && chown -R php:php storage bootstrap/cache \
         && composer install \
-        && php artisan key:generate"
+        && php artisan key:generate \
+        && php artisan migrate"
     fi
     CONTAINERS_RUNNING=$($COMPOSE ps -q ui | wc -l)
     if [ "$CONTAINERS_RUNNING" -gt 0 ]; then
@@ -56,13 +57,7 @@ if [ $# -gt 0 ]; then
 
   elif [ "art" == "$1" ]; then shift 1
     export APP_ENV=local
-    PHP_VER=$(php --version  3> /dev/null)
-    if [[ $PHP_VER = PHP* ]]; then
-      export DB_HOST=127.0.0.1
-      php api/artisan "$@"
-    else
-      $COMPOSE exec api php artisan "$@"
-    fi
+    $COMPOSE exec api php artisan "$@"
 
   elif [ "composer" == "$1" ]; then shift 1
     $COMPOSE exec api composer "$@"
