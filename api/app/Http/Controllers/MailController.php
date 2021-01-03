@@ -6,6 +6,7 @@ use App\Http\Requests\MailRequest;
 use App\Jobs\SendEmailJob;
 use App\Models\Mail;
 use Exception;
+use Html2Text\Html2Text;
 use Illuminate\Http\JsonResponse;
 
 class MailController extends Controller
@@ -29,11 +30,15 @@ class MailController extends Controller
         if (isset($request->status)) {
             $mail->hasStatus($request->status);
         }
-        if (isset($request->to_email)) {
-            $mail->dedicatedFor($request->to_email);
+        if (isset($request->to)) {
+            $mail->dedicatedFor($request->to);
         }
+        if (isset($request->from)) {
+            $mail->sentBy($request->from);
+        }
+        $mail->orderBy('updated_at', 'DESC');
 
-        return response()->json($mail->paginate(20));
+        return response()->json($mail->paginate(10));
     }
 
     /**
@@ -46,10 +51,16 @@ class MailController extends Controller
     {
         $request = $request->validated();
 
+        $request['text'] = (new Html2Text(preg_replace(
+            '/<li><p>(.*?)<\/p>/i',
+            '<li>$1', $request['html'])
+        ))->getText();
+
         $attachments = [];
+        $request['attachments'] = $request['attachments'] ?? [];
         foreach($request['attachments'] as $attachment) {
             $attachments[] = [
-                'name' => $attachment->name,
+                'name' => $attachment->getClientOriginalName(),
                 'size' => $attachment->getSize(),
                 'path' => $attachment->store('attachments'),
             ];
