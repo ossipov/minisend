@@ -1,4 +1,4 @@
-# 📭 miniSend
+# 💌 miniSend
 Mail sending app based on Laravel & Nuxt
 
 ## Requirements
