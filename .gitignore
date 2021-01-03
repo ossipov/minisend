@@ -2,8 +2,10 @@
 .vscode/
 vendor/
 node-modules/
+opt/
 docker-compose.override.yml
 .yarn_cache/*
 !.yarn_cache/.gitkeep
 *.cache
 .env
+_ide_helper.php

@@ -7,10 +7,11 @@ services:
     ports:
       - '80:80'
     environment:
-      XDEBUG_CONFIG: 'remote_host=host.docker.internal remote_enable=1'
+      XDEBUG_CONFIG: 'remote_host=${REMOTE_HOST} remote_enable=1'
       PHP_IDE_CONFIG: 'serverName=MiniSend'
       APP_ENV: 'local'
 
+#host.docker.internal
   ui:
     extends:
       file: docker-compose.base.yml
@@ -30,7 +31,7 @@ services:
       file: docker-compose.base.yml
       service: mariadb
     ports:
-      - '3306:3306'
+      - '13306:3306'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'
