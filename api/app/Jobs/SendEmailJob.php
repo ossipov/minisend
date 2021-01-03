@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Mail\DefaultEmail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -19,10 +18,9 @@ class SendEmailJob implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @return void
+     * @param \App\Models\Mail $email
      */
-    public function __construct($email)
+    public function __construct(\App\Models\Mail $email)
     {
         $this->email = $email;
     }
@@ -34,6 +32,10 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email->to_email)->send(new DefaultEmail());
+        Mail::to($this->email->to_email)->send(new DefaultEmail($this->email));
+
+        $mail = \App\Models\Mail::findOrFail($this->email->id);
+        $mail->status = empty(Mail::failures()) ? 'sent' : 'failed';
+        $mail->save();
     }
 }

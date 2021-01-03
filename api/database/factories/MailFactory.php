@@ -22,7 +22,7 @@ class MailFactory extends Factory
     public function definition()
     {
         return [
-            'status' => $this->faker->randomKey(['posted', 'sent', 'failed']),
+            'status' => $this->faker->randomElement(['posted', 'sent', 'failed']),
             'from_name' => $this->faker->name,
             'from_email' => $this->faker->unique()->safeEmail,
             'to_name' => $this->faker->name,
