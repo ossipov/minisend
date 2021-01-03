@@ -8,4 +8,5 @@ docker-compose.override.yml
 !.yarn_cache/.gitkeep
 *.cache
 .env
-_ide_helper.php
+api/_ide_helper.php
+api/.phpstorm.meta.php
