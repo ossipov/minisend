@@ -19,6 +19,7 @@ Mail sending app based on Laravel & Nuxt
 # Clone the repo
 git clone https://github.com/ossipov/minisend 
 cd minisend
+chmod +x run
 
 # Getting dependencies and spinning up the project for the first time
 ./run build
