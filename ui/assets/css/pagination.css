@@ -1,0 +1,26 @@
+.pagination {
+  @apply flex justify-center mb-6;
+}
+
+.pagination li a {
+  @apply px-3 py-1 mr-1 block rounded border-gray-300 border bg-gray-100;
+}
+
+.pagination a:focus {
+  outline: none;
+  box-shadow: none;
+  
+}
+
+.pagination li.disabled a, .pagination li.disabled a:hover {
+  @apply  border-gray-200 bg-transparent cursor-default text-gray-500;
+}
+
+.pagination li.active a, .pagination li.active a:hover {
+  @apply  border-gray-200 bg-transparent cursor-default bg-blue-700 text-white;
+}
+
+.pagination li a:hover {
+  @apply bg-blue-100 border-blue-400;
+}
+

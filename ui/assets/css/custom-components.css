@@ -1,0 +1,84 @@
+html,
+body,
+#__nuxt,
+#__layout {
+  @apply h-full;
+}
+
+a {
+  color: #000;
+  transition: all ease-in 0.2s;
+  /* border-bottom: 1px solid #efefef; */
+}
+a:focus, .btn:focus, select:focus, input:focus, .ProseMirror-focused {
+  outline: none;
+  transition: all ease-in 0.2s;
+  box-shadow: 0 0 0 3px #9dabbd99;
+}
+a:not(.btn):not(.nav):not(.sendmail):hover {
+  /* color: #009b90; */
+  /* color: #0b7aa2;  */
+  /* #00978f; */
+  /* text-decoration: underline; */
+  /* border-bottom: 1px solid red; */
+  /* background: #efefef; */
+  transition: all ease-out 0.2s;
+  /* transform: translateY(2px); */
+}
+
+body {
+  @apply text-gray-900 bg-gray-200;
+}
+
+.btn {
+  @apply text-base rounded py-2 px-4;
+  transition: 0.3s all;
+  transform: scale3d(0.96,0.96,0.96);
+}
+.btn:hover {
+  @apply shadow-lg;
+  transition: 0.3s all;
+  transform: scale3d(0.99,0.99,0.99);
+}
+.btn:active {
+  transition: 0ms all;
+  transform: scale3d(0.94,0.94,0.94);
+}
+
+input, select, .ProseMirror  {
+  @apply p-2 border-gray-300 border rounded;
+}
+
+.page-enter-active {
+  animation: pageIn 0.4s ease-in both;
+}
+.page-leave-active {
+  animation: pageOut 0.4s ease-out both;
+}
+
+@keyframes pageIn {
+  0% {
+    /* transform: scale(0.2); */
+    opacity: 0;
+    /* transform: translate3d(100%, 0, 0); */
+  }
+  100% {
+    /* transform: scale(1); */
+    opacity: 1;
+    /* transform: translate3d(0, 0, 0); */
+  }
+}
+@keyframes pageOut {
+  0% {
+    /* transform: scale(1); */
+    opacity: 1;
+
+    /* transform: translate3d(0, 0, 0); */
+  }
+  100% {
+    /* transform: scale(1.1); */
+    opacity: 0;
+
+    /* transform: translate3d(-20%, 0, 0); */
+  }
+}

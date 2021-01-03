@@ -1,0 +1,25 @@
+  .form {
+    @apply p-5 mb-5 border rounded bg-gray-100 shadow-sm;
+  }
+  .row div {
+    @apply mr-2;
+  }
+  .row div:last-child {
+    @apply mr-0;
+  }
+
+  .form label {
+    @apply block font-semibold text-sm mb-1;
+  }
+
+  .form button {
+    @apply z-50;
+  }
+
+  .form button.search {
+    @apply bg-green-600 text-white;
+  }
+
+  .form button.clean {
+    @apply bg-gray-600 text-white ml-2;
+  }

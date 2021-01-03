@@ -1,5 +1,5 @@
 {
-  "name": "miniSend",
+  "name": "mini-send",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,15 +9,25 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxt/types": "^2.14.11",
+    "@fortawesome/free-brands-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@nuxtjs/axios": "^5.12.2",
     "core-js": "^3.6.5",
     "global": "^4.4.0",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "nuxt-fontawesome": "^0.4.0",
+    "postcss-nested": "^4.2.3",
+    "tiptap": "^1.30.0",
+    "tiptap-extensions": "^1.33.2",
+    "vuejs-paginate": "^2.1.0"
+  },
+  "resolutions": {
+    "prosemirror-model": "1.9.1"
   },
   "devDependencies": {
     "@nuxt/types": "~2.14.0",
-    "@nuxtjs/tailwindcss": "^3.1.0"
+    "@nuxtjs/tailwindcss": "^3.1.0",
+    "nuxt-purgecss": "^1.0.0"
   },
   "config": {
     "nuxt": {
