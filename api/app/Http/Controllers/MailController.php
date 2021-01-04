@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MailRequest;
 use App\Jobs\SendEmailJob;
 use App\Models\Mail;
+use App\Services\MailService;
 use Exception;
-use Html2Text\Html2Text;
 use Illuminate\Http\JsonResponse;
 
 class MailController extends Controller
 {
+    protected $mailService;
+
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,25 +27,13 @@ class MailController extends Controller
     public function index(MailRequest $request): JsonResponse
     {
         if (isset($request->id)) {
-            return response()->json(Mail::findOrFail($request->id));
+            return response()->json(
+                $this->mailService->mailById($request->id)
+            );
         }
-
-        $mail = Mail::select();
-        if (isset($request->subject)) {
-            $mail->containsSubject($request->subject);
-        }
-        if (isset($request->status)) {
-            $mail->hasStatus($request->status);
-        }
-        if (isset($request->to)) {
-            $mail->dedicatedFor($request->to);
-        }
-        if (isset($request->from)) {
-            $mail->sentBy($request->from);
-        }
-        $mail->orderBy('updated_at', 'DESC');
-
-        return response()->json($mail->paginate(10));
+        return response()->json(
+            $this->mailService->filteredListOfMails($request)
+        );
     }
 
     /**
@@ -49,25 +44,7 @@ class MailController extends Controller
      */
     public function store(MailRequest $request): JsonResponse
     {
-        $request = $request->validated();
-
-        $request['text'] = (new Html2Text(preg_replace(
-            '/<li><p>(.*?)<\/p>/i',
-            '<li>$1', $request['html'])
-        ))->getText();
-
-        $attachments = [];
-        $request['attachments'] = $request['attachments'] ?? [];
-        foreach($request['attachments'] as $attachment) {
-            $attachments[] = [
-                'name' => $attachment->getClientOriginalName(),
-                'size' => $attachment->getSize(),
-                'path' => $attachment->store('attachments'),
-            ];
-        }
-        $request['attachments'] = json_encode($attachments);
-        $mail = Mail::create($request);
-
+        $mail = $this->mailService->createMail($request);
         SendEmailJob::dispatch($mail);
         return response()->json($mail, 201);
     }
