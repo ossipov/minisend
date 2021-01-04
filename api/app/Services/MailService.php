@@ -28,7 +28,9 @@ class MailService
      */
     public function filteredListOfMails($request): LengthAwarePaginator
     {
-        $mail = Mail::select();
+        $mail = Mail::select([
+            'id', 'status', 'from_name', 'from_email', 'to_name', 'to_email', 'subject'
+        ]);
         if (isset($request->subject)) {
             $mail->containsSubject($request->subject);
         }
