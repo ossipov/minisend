@@ -12,11 +12,7 @@
       Sorry, something's wrong with API server 😥
     </div>
 
-    <div v-if="mails.total===0 && !server_error && !loading" class="p-10 border-2 rounded border-gray-700 text-2xl text-center text-gray-800">
-      No Mail added yet 😋
-    </div>
-
-    <div class="flex px-2 text-gray-700 py-1 rounded mb-6 text-sm w-full" v-if="mails.total>0">
+    <div class="flex px-2 text-gray-700 py-1 rounded mb-6 text-sm w-full" v-if="mails.total>10">
       <span class="flex-grow">
         <span class="text-gray-900">Page:</span> {{ mails.current_page }} / {{ mails.last_page }}
       </span>
@@ -25,7 +21,7 @@
       </span>
     </div>
 
-    <div class="form block row md:flex" v-if="mails.total>0">
+    <div class="form block row md:flex">
       <div class="flex-shrink">
         <label for="status">Status</label>
         <select v-model="search.status" name="" id="status">
@@ -69,6 +65,10 @@
         <button class="btn search" @click="searchFilter">Get'em</button>
         <button class="btn clean" @click="clean">Clean</button>
       </div>
+    </div>
+
+    <div v-if="mails.total===0 && !server_error && !loading" class="p-10 border-2 rounded border-gray-700 text-2xl text-center text-gray-800">
+      No Mail found 😋
     </div>
 
     <div class="loader" v-if="loading">Loading</div>
