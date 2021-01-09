@@ -197,6 +197,12 @@ export default {
         this.errors = { attachments: [] }
         return resp
       } catch (error) {
+
+        if (error.response.status === 413) {
+          this.errors.attachments = ['Attachment is too large']
+          return false
+        }
+
         let attachments = []
 
         for (const [key, value] of Object.entries(error.response.data)) {

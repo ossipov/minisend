@@ -30,7 +30,7 @@ class MailRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         switch ($this->getMethod())
         {
@@ -40,7 +40,7 @@ class MailRequest extends FormRequest
                     'to_email' => 'required|email',
                     'subject' => 'required|string',
                     'html' => 'required|string',
-                    'attachments.*' => 'mimes:pdf,xls,xlsx,doc,docx,jpeg,png|max:500000'
+                    'attachments.*' => 'mimes:pdf,xls,xlsx,doc,docx,jpeg,png|max:2000' // Kb
                 ];
             case 'DELETE':
                 return [
@@ -56,6 +56,22 @@ class MailRequest extends FormRequest
             'subject' => 'string',
             'status' => 'in:sent,posted,failed',
             'id' => 'integer|exists:mails,id',
+        ];
+    }
+
+    /**
+     * Set custom messages for validator errors.
+     *
+     * @return array
+     */    public function messages(): array
+    {
+        return [
+            'from_email.required' => 'Sender\'s email is required.',
+            'to_email.required' => 'Recipient\'s email is required.',
+            'subject.required' => 'Subject is required.',
+            'html.required' => 'Mail Body is required.',
+            'attachments.*.mimes' => 'We only support attachments of: :values',
+            'attachments.*.max' => 'Each attachment may not be greater than :max kilobytes.'
         ];
     }
 }
