@@ -18,6 +18,8 @@ services:
       service: ui
     ports:
       - '3000:3000'
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
     entrypoint: ['sh', '-c']
     command: ['yarn dev']
 

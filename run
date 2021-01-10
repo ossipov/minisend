@@ -16,6 +16,11 @@ echo ''
 if [ $# -gt 0 ]; then
   # Let's build the project
   if [ "build" == "$1" ]; then shift 1
+    CONTAINERS_RUNNING=$($COMPOSE ps -q | wc -l)
+    if [ "$CONTAINERS_RUNNING" -gt 0 ]; then
+      $COMPOSE down --remove-orphans
+    fi
+    $COMPOSE up -d --build
     # Checking if composer got the dependencies
     if [ ! -d "./api/vendor" ]; then
       if [ ! -f ".env" ]; then
@@ -24,7 +29,6 @@ if [ $# -gt 0 ]; then
       if [ ! -f "./api/.env" ]; then
         cp .env.example ./api/.env
       fi
-      $COMPOSE up -d --build
       $COMPOSE exec api sh -c "chmod -R ug+rwx storage bootstrap/cache \
         && chown -R php:php storage bootstrap/cache \
         && composer install \

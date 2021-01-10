@@ -1,4 +1,14 @@
 // const webpack = require("webpack")
+const authEndpointParams = {
+  method: 'post',
+  withCredentials: true, 
+  headers: {
+    'X-Requested-With': 'XMLHttpRequest',
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+}
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -59,6 +69,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
     [
       "nuxt-fontawesome",
       {
@@ -86,10 +97,51 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     proxy: true, // Can be also an object with default options
-    prefix: "/"
+    prefix: "/",
+    credentials: true,
   },
   proxy: {
     "/api/": { target: "http://api" }
+  },
+  router: {
+    middleware: ['auth']
+  },
+  auth: {
+    watchLoggedIn: true,
+    redirect: {
+      login: '/signin',
+      home: '/'
+    },
+    strategies: {
+      tokenRequired: false,
+      tokenType: false,
+      cookie: {
+        cookie: {
+          name: 'XSRF-TOKEN',
+        },
+        user: {
+          property: false
+        },
+        endpoints: {
+          csrf: {
+            url: '/api/csrf-cookie'
+          },
+          login: { 
+            ...authEndpointParams,
+            url: '/api/signin', 
+          },
+          logout: {
+            ...authEndpointParams,
+            url: '/api/logout', 
+          },
+          user: { 
+            ...authEndpointParams,
+            url: '/api/user', 
+            method: 'get',
+          }
+        }
+      },
+    }
   },
 
   build: {

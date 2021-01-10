@@ -79,7 +79,7 @@
           v-for="(mail, key) in mails.data"
           :key="key"
           class="border-b py-2 focus:bg-yellow-100 hover:bg-blue-100 cursor-pointer"
-          @click="$router.push(mail.id + '/')"
+          @click="$router.push('/mail/' + mail.id + '/')"
         >
             <td class="text-center block sm:table-cell py-3 px-4 w-full sm:w-1/12">
               <StatusBadge
@@ -127,6 +127,7 @@ import Paginate from 'vuejs-paginate//src//components//Paginate.vue'
 
 export default {
   name: "home",
+  middleware: 'auth',
   components: {
     Paginate,
     StatusBadge,

@@ -36,6 +36,7 @@ RUN chown -R php:nginx /www \
     php7-pdo \
     php7-pdo_mysql \
     php7-pdo_sqlite \
+    php7-iconv \
     && echo "zend_extension=/usr/lib/php7/modules/xdebug.so" > /etc/php7/conf.d/xdebug.ini \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && rm -rf /root/.composer/cache
