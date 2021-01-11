@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Http\Requests\MailRequest;
 use App\Models\Mail;
 use Html2Text\Html2Text;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -17,7 +18,10 @@ class MailService
      */
     public function mailById($id): Mail
     {
-        return Mail::findOrFail($id);
+        if(auth()->user()->isAdmin()) {
+            return Mail::findOrFail($id);
+        }
+        return auth()->user()->mails()->findOrFail($id);
     }
 
     /**
@@ -26,21 +30,24 @@ class MailService
      * @param $request
      * @return LengthAwarePaginator
      */
-    public function filteredListOfMails($request): LengthAwarePaginator
+    public function filteredListOfMails(MailRequest $request): LengthAwarePaginator
     {
         $mail = Mail::select([
             'id', 'status', 'from_name', 'from_email', 'to_name', 'to_email', 'subject'
         ]);
-        if (isset($request->subject)) {
+        if (! auth()->user()->isAdmin()) {
+            $mail->where('user_id', auth()->id());
+        }
+        if ($request->filled('subject')) {
             $mail->containsSubject($request->subject);
         }
-        if (isset($request->status)) {
+        if ($request->filled('status')) {
             $mail->hasStatus($request->status);
         }
-        if (isset($request->to)) {
+        if ($request->filled('to')) {
             $mail->dedicatedFor($request->to);
         }
-        if (isset($request->from)) {
+        if ($request->filled('from')) {
             $mail->sentBy($request->from);
         }
         $mail->orderBy('updated_at', 'DESC');
@@ -54,11 +61,12 @@ class MailService
      * @param $request
      * @return Mail|Model
      */
-    public function createMail($request): Mail
+    public function createMail(MailRequest $request): Mail
     {
-        $request['text'] = $this->convertHtml2Text($request['html']);
-        $request['attachments'] = $this->extractAttachments($request);
-
+        $request = array_merge($request->all(), [
+            'text' => $this->convertHtml2Text($request->html),
+            'attachments' => $this->extractAttachments($request),
+        ]);
         return Mail::create($request);
     }
 
@@ -75,11 +83,11 @@ class MailService
         return (new Html2Text($html))->getText();
     }
 
-    private function extractAttachments($request)
+    private function extractAttachments(MailRequest $request)
     {
         $attachments = [];
-        $request['attachments'] = $request['attachments'] ?? [];
-        foreach($request['attachments'] as $attachment) {
+        $request->attachments = $request->attachments ?? [];
+        foreach($request->attachments as $attachment) {
             $attachments[] = [
                 'name' => $attachment->getClientOriginalName(),
                 'size' => $attachment->getSize(),

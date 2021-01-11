@@ -22,6 +22,7 @@ class MailFactory extends Factory
     public function definition()
     {
         return [
+            'user_id' => rand(1,7),
             'status' => $this->faker->randomElement(['posted', 'sent', 'failed']),
             'from_name' => $this->faker->name,
             'from_email' => $this->faker->unique()->safeEmail,

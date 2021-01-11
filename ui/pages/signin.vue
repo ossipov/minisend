@@ -12,9 +12,9 @@
         <a href="#" class="text-blue-600 underline" @click="setAdmin">Admin</a>
         /
         <a href="#" class="text-blue-600 underline" @click="setUser">User</a> or
-        <nuxt-link
-        to="/signup"
-        class="text-blue-600 underline" >Sign Up</nuxt-link>
+        <nuxt-link to="/signup" class="text-blue-600 underline"
+          >Sign Up</nuxt-link
+        >
         for a new account
       </div>
 
@@ -27,7 +27,9 @@
           name="email"
           id="email"
         />
-        <span class="text-sm text-red-700 p-2" v-if="errors.email">{{errors.email[0]}}</span>
+        <span class="text-sm text-red-700 p-2" v-if="errors.email">{{
+          errors.email[0]
+        }}</span>
       </div>
 
       <div class="mb-6 w-full">
@@ -39,7 +41,9 @@
           id="password"
           v-model="password"
         />
-        <span class="text-sm text-red-700 p-2" v-if="errors.password">{{errors.password[0]}}</span>
+        <span class="text-sm text-red-700 p-2" v-if="errors.password">{{
+          errors.password[0]
+        }}</span>
       </div>
 
       <button
@@ -86,16 +90,18 @@ export default {
     },
 
     async signup() {
-      try{
-        await this.$axios.get('/api/csrf-cookie')
+      try {
+        await this.$axios.get("/api/csrf-cookie");
         await this.$axios.post("/api/signup", {
           data: {
             email: this.email,
             password: this.password,
-          }
-        })
+          },
+        });
+        // console.log(resp);
       } catch (error) {
         this.errors = error.response.data.errors;
+        console.log(error.response.data);
       }
     },
 

@@ -34,8 +34,7 @@
       </div>
 
       <b>TEXT:</b>
-      <div class="w-full mb-6 p-5 border rounded bg-white">
-        <pre class="whitespace-normal">{{ mail.text }}</pre>
+      <div class="w-full mb-6 p-5 border rounded bg-white" v-html="brText">
       </div>
 
       <div v-if="mail.attachments.length > 0">
@@ -86,7 +85,12 @@ export default {
       // let day = days[date.getDay()]
       let month = months[date.getMonth()]
 
-      return  month + ' ' + date.getDate() + ', '+ date.getFullYear() + ' [' + date.getHours() + ':' + date.getMinutes() + ']'
+      return  month + ' ' + date.getDate() + ', '+ date.getFullYear() + ' [' 
+        + ("0" + date.getHours()).slice(-2) + ':' 
+        + ("0" + date.getMinutes()).slice(-2) + ']'
+    },
+    brText: function() {
+      return this.mail.text.replace(/(?:\r\n|\r|\n)/g, '<br />')
     }
   },
   head() {

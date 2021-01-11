@@ -61,6 +61,18 @@ class Mail extends Model
         'attachments'
     ];
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::creating(function ($mail) {
+            $mail->user_id = auth()->id() ?? $mail->user_id;
+        });
+    }
+
     public function scopeContainsSubject($query, $subject)
     {
         $query->where('subject', 'like', '%' . $subject . '%');
@@ -87,4 +99,8 @@ class Mail extends Model
         });
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }

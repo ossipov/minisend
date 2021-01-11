@@ -15,6 +15,7 @@ class MailRequest extends FormRequest
      */
     public function authorize()
     {
+        if (! auth()->check()) return false;
         return true;
     }
 
