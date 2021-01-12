@@ -13,9 +13,18 @@ class AddUserToMailsTable extends Migration
      */
     public function up()
     {
-        Schema::table('mails', function (Blueprint $table) {
-            $table->integer('user_id')->after('id');
-        });
+        if (app()->environment() === 'testing') {
+            Schema::table('mails', function (Blueprint $table) {
+                $table->integer('user_id')->nullable();
+            });
+            Schema::table('mails', function (Blueprint $table) {
+                $table->integer('user_id')->nullable(false)->change();
+            });
+        } else {
+            Schema::table('mails', function (Blueprint $table) {
+                $table->integer('user_id')->after('id');
+            });
+        }
     }
 
     /**

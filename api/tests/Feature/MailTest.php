@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use Laravel\Sanctum\Sanctum;
 use App\Jobs\SendEmailJob;
 use App\Models\Mail;
+use App\Models\User;
 use Database\Seeders\MailSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\UploadedFile;
@@ -39,6 +41,10 @@ class MailTest extends TestCase
             'attachments' => [$file1, $file2]
         ];
 
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
         $response = $this->postJson('/api/mail', $clientRequest);
         $response->assertStatus(201);
 
@@ -56,9 +62,13 @@ class MailTest extends TestCase
     /** @test */
     public function guest_can_get_list_of_all_emails()
     {
+        $user = User::factory()->create();
+
         Mail::factory()->times(50)->create([
             'to_email' => 'dmitry@ossipov.me'
         ]);
+
+        Sanctum::actingAs($user, ['*']);
 
         $response = $this->get('/api/mail');
         $response->assertStatus(200);
@@ -77,11 +87,15 @@ class MailTest extends TestCase
     /** @test */
     public function guest_can_get_list_of_filtered_emails_by_subject()
     {
+        $user = User::factory()->create();
+
         Mail::factory()->times(10)->create([
+            'user_id' => $user->id,
             'subject' => "Hooray! You've got an award for being so awesome 🎉"
         ]);
         Mail::factory()->times(40)->create();
 
+        Sanctum::actingAs($user, ['*']);
         $response = $this->json('get', '/api/mail', [
             'subject' => 'award'
         ]);
@@ -94,16 +108,22 @@ class MailTest extends TestCase
     /** @test */
     public function guest_can_get_list_of_filtered_emails_by_status()
     {
+        $user = User::factory()->create();
+
         Mail::factory()->times(10)->create([
+            'user_id' => $user->id,
             'status' => 'failed'
         ]);
         Mail::factory()->times(10)->create([
+            'user_id' => $user->id,
             'status' => 'posted'
         ]);
         Mail::factory()->times(10)->create([
+            'user_id' => $user->id,
             'status' => 'sent'
         ]);
 
+        Sanctum::actingAs($user, ['*']);
         $response = $this->json('get', '/api/mail', [
             'status' => 'posted'
         ]);
@@ -116,13 +136,19 @@ class MailTest extends TestCase
     /** @test */
     public function guest_can_get_list_of_emails_for_recipient()
     {
+        $user = User::factory()->create();
+
         Mail::factory()->times(10)->create([
+            'user_id' => $user->id,
             'to_email' => 'dmitry@ossipov.me'
         ]);
-        Mail::factory()->times(40)->create();
+        Mail::factory()->times(40)->create([
+            'user_id' => $user->id,
+        ]);
 
+        Sanctum::actingAs($user, ['*']);
         $response = $this->json('get', '/api/mail', [
-            'to_email' => 'dmitry@ossipov.me'
+            'to' => 'dmitry@ossipov.me'
         ]);
 
         $response->assertStatus(200);
@@ -133,11 +159,17 @@ class MailTest extends TestCase
     /** @test */
     public function guest_can_get_a_single_email()
     {
+        $user = User::factory()->create();
+
         Mail::factory()->create([
+            'user_id' => $user->id,
             'to_email' => 'dmitry@ossipov.me'
         ]);
-        Mail::factory()->times(40)->create();
+        Mail::factory()->times(40)->create([
+            'user_id' => $user->id,
+        ]);
 
+        Sanctum::actingAs($user, ['*']);
         $response = $this->json('get', '/api/mail', [
             'id' => 1
         ]);
@@ -147,5 +179,64 @@ class MailTest extends TestCase
             'id' => 1,
             'to_email' => 'dmitry@ossipov.me'
         ]);
+    }
+
+    /** @test */
+    public function guest_cant_see_mails_of_other_users()
+    {
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        Mail::factory(10)->create([
+            'user_id' => $user1->id,
+        ]);
+        Mail::factory(40)->create([
+            'user_id' => $user2->id,
+        ]);
+
+        Sanctum::actingAs($user1, ['*']);
+        $this->json('get', '/api/mail')
+            ->assertStatus(200)
+            ->assertJson([
+                'total' => 10,
+            ]);
+    }
+
+    /** @test */
+    public function unauthenticated_cant_view_mails()
+    {
+        $user1 = User::factory()->create();
+
+        Mail::factory(10)->create([
+            'user_id' => $user1->id,
+        ]);
+
+        $this->expectException('Illuminate\Auth\Access\AuthorizationException');
+        $this->json('get', '/api/mail');
+    }
+
+    /** @test */
+    public function admin_can_view_all_users_mails()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        Mail::factory(10)->create([
+            'user_id' => $admin->id,
+        ]);
+        Mail::factory(10)->create([
+            'user_id' => $user1->id,
+        ]);
+        Mail::factory(10)->create([
+            'user_id' => $user2->id,
+        ]);
+
+        Sanctum::actingAs($admin, ['*']);
+        $this->json('get', '/api/mail')
+            ->assertStatus(200)
+            ->assertJson([
+                'total' => 30,
+            ]);
     }
 }
