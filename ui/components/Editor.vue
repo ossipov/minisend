@@ -116,7 +116,7 @@
           :class="{ 'is-active': isActive.bullet_list() }"
           @click="commands.bullet_list"
         >
-          <fa icon="list-ul" /> 
+          <fa icon="list-ul" />
         </button>
 
         <button
@@ -151,7 +151,7 @@
           class="menubar__button"
           @click="commands.horizontal_rule"
         >
-          — 
+          —
         </button>
 
       </div>
@@ -219,7 +219,7 @@ export default {
     return {
       editor: null,
       linkUrl: null,
-      linkMenuIsActive: false,      
+      linkMenuIsActive: false,
     }
   },
   beforeDestroy() {

@@ -1,7 +1,7 @@
 // const webpack = require("webpack")
 const authEndpointParams = {
   method: 'post',
-  withCredentials: true, 
+  withCredentials: true,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export default {
     cssPath: '~/assets/css/tailwind.css',
     exposeConfig: false
   },
-  
+
   purgeCSS: {
     // mode: 'postcss',
     paths: [
@@ -126,17 +126,17 @@ export default {
           csrf: {
             url: '/api/csrf-cookie'
           },
-          login: { 
+          login: {
             ...authEndpointParams,
-            url: '/api/signin', 
+            url: '/api/signin',
           },
           logout: {
             ...authEndpointParams,
-            url: '/api/logout', 
+            url: '/api/logout',
           },
-          user: { 
+          user: {
             ...authEndpointParams,
-            url: '/api/user', 
+            url: '/api/user',
             method: 'get',
           }
         }
@@ -145,6 +145,12 @@ export default {
   },
 
   build: {
+    extend(config, { isClient }) {
+      if (isClient) {
+        config.optimization.splitChunks.maxSize = 650000
+      }
+      config.performance.hints = false
+    },
     postcss: {
       plugins: {
         // Disable a plugin by passing false as value
