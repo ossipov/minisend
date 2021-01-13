@@ -44,13 +44,11 @@ Route::get('/mail', [MailController::class, 'index']);
 $limiter = config('fortify.limiters.login');
 Route::post('/signin', [AuthenticatedSessionController::class, 'store'])
     ->middleware(array_filter([
-        'guest',
         $limiter ? 'throttle:' . $limiter : null,
     ]));
 
 // Registration...
-Route::post('/signup', [RegisteredUserController::class, 'store'])
-    ->middleware(['guest']);
+Route::post('/signup', [RegisteredUserController::class, 'store']);
 
 
 
