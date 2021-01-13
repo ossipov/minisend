@@ -39,6 +39,7 @@ function remove_dotenv_files() {
 
 function clean_vendors() {
   sudo rm -rf ./api/vendor
+  sudo rm -rf ./api/storage/app/attachments
   sudo rm -rf ./ui/node_modules
   sudo rm -rf ./ui/.nuxt
 }
@@ -76,9 +77,11 @@ if [ $# -gt 0 ]; then
     $COMPOSE build --no-cache ui
     build_ui
     $COMPOSE up -d
+    $COMPOSE exec api sh -c "php artisan optimize:clear"
     build_api
 
   elif [ "clean" == "$1" ]; then
+    stop_containers_if_they_are_running_and_remove_orphans
     remove_dotenv_files
     clean_vendors
 

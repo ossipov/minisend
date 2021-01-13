@@ -9,7 +9,7 @@ Mail sending app based on Laravel v8 & Nuxt v2.
 ## What's inside?
 * NUXT for UI (implements SPA/SSR) - Available at <http://127.0.0.1>
 * Laravel as API - Available at <http://127.0.0.1/api>
-* CSRF cookie Authentication / Authorization
+* CSRF cookie Authentication / Authorization (Sanctum/Fortify/Nuxt-Auth)
 * Mailhog (to test sent mail) - Available at <http://127.0.0.1:8025>
 * NGINX
 * MariaDB
@@ -29,9 +29,6 @@ Please stop any service that is occupying that port before build.
 # Getting dependencies and spinning up the project for the first time
 ./run build
 
-# Seed DataBase with fake data (step can be skipped)
-./run art db:seed
-
 # Turning on queue worker daemon to process mails
 ./run art queue:work
 ```
@@ -41,6 +38,7 @@ UI Available at <http://127.0.0.1>
 If you are upgrading from a previous version
 ```sh
 git pull
+chmod +x run
 ./run rebuild
 ```
 
@@ -51,4 +49,10 @@ git pull
 
 # Bringing services up
 ./run up
+```
+
+## API Tests
+When app is running you can test it with
+```sh
+./run test
 ```
