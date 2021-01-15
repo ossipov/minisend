@@ -23,60 +23,41 @@
     <div v-else class="form">
       <h1 class="text-lg font-bold mb-4">Sign-Up</h1>
 
-      <div class="mb-4 w-full">
-        <label for="name" class="block">Name</label>
-        <input
-          v-model="name"
-          class="w-full"
-          type="text"
-          name="name"
-          id="name"
-        />
-        <span class="text-sm text-red-700 p-2" v-if="errors.name">{{
-          errors.name[0]
-        }}</span>
-      </div>
+      <input-element
+        label="Name:"
+        class="mb-4 w-full"
+        type="text"
+        id="name"
+        :error="errors.name"
+        v-model="name"
+      />
 
-      <div class="mb-4 w-full">
-        <label for="email" class="block">Email</label>
-        <input
-          v-model="email"
-          class="w-full"
-          type="text"
-          name="email"
-          id="email"
-        />
-        <span class="text-sm text-red-700 p-2" v-if="errors.email">{{
-          errors.email[0]
-        }}</span>
-      </div>
+      <input-element
+        label="Email:"
+        class="mb-4 w-full"
+        type="email"
+        id="email"
+        :error="errors.email"
+        v-model="email"
+      />
 
-      <div class="mb-6 w-full">
-        <label for="password" class="block">Password</label>
-        <input
-          type="password"
-          name="password"
-          class="w-full"
-          id="password"
-          v-model="password"
-        />
-        <span class="text-sm text-red-700 p-2" v-if="errors.password">{{
-          errors.password[0]
-        }}</span>
-      </div>
+      <input-element
+        label="Password:"
+        class="mb-4 w-full"
+        type="password"
+        id="password"
+        :error="errors.password"
+        v-model="password"
+      />
 
-      <div class="mb-6 w-full">
-        <label for="password_confirmation" class="block"
-          >Password Confirmation</label
-        >
-        <input
-          type="password"
-          name="password_confirmation"
-          class="w-full"
-          id="password_confirmation"
-          v-model="password_confirmation"
-        />
-      </div>
+      <input-element
+        label="Password Confirmation:"
+        class="mb-6 w-full"
+        type="password"
+        id="password_confirmation"
+        :error="errors.password_confirmation"
+        v-model="password_confirmation"
+      />
 
       <button
         @click="signup()"
@@ -96,13 +77,15 @@
 </template>
 
 <script>
-import SuccessCheckmark from '@/components/SuccessCheckmark'
+import SuccessCheckmark from "@/components/SuccessCheckmark"
+import InputElement from "@/components/InputElement"
 
 export default {
   layout: "empty",
   auth: "guest",
   components: {
-    SuccessCheckmark
+    SuccessCheckmark,
+    InputElement,
   },
   data() {
     return {

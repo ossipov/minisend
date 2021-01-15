@@ -20,78 +20,63 @@
 
     <div v-else class="form">
       <div class="block row md:flex mb-4 ">
-        <div class="w-full md:w-1/2 mb-4 md:mb-0">
-          <label for="from_name">FROM:</label>
-          <div class="flex">
-            <div class="flex-grow items-end w-full md:w-1/2">
-              <input
-                v-model="mail.from_name"
-                placeholder="Joe The Sender"
-                class="w-full"
-                type="text"
-                name=""
-                id="from_name"
-              />
-            </div>
-            <div class="flex items-end w-full md:w-1/2 flex-wrap">
-              <input
-                v-model="mail.from_email"
-                placeholder="joe@senders.we.are"
-                class="flex-grow w-full"
-                type="text"
-                name=""
-                id="from_email"
-              />
-              <span class="text-sm text-red-700 p-2" v-if="errors.from_email">{{
-                errors.from_email[0]
-              }}</span>
-            </div>
-          </div>
+        <div class="w-full flex items-start md:w-1/2 mb-4 md:mb-0">
+
+          <input-element 
+            label="FROM:"
+            class="flex-grow w-1/2"
+            type="text"
+            id="from_name"
+            placeholder="Joe The Sender"
+            v-model="mail.from_name"
+          />
+
+          <input-element 
+            class="flex-grow w-1/2"
+            type="text"
+            id="from_email"
+            placeholder="joe@senders.we.are"
+            :error="errors.from_email"
+            v-model="mail.from_email"
+          />
+
         </div>
 
-        <div class="w-full md:w-1/2">
-          <label for="to_name">TO:</label>
-          <div class="flex">
-            <div class="flex-grow w-1/2">
-              <input
-                v-model="mail.to_name"
-                class="w-full"
-                placeholder="Doe The Reciever"
-                type="text"
-                name=""
-                id="to_name"
-              />
-            </div>
-            <div class="flex-grow w-1/2 items-end mr-0">
-              <input
-                v-model="mail.to_email"
-                class="w-full"
-                placeholder="doe@receiver.i.am"
-                type="text"
-                name=""
-                id="to_email"
-              />
-              <span class="text-sm text-red-700 p-2" v-if="errors.to_email">{{
-                errors.to_email[0]
-              }}</span>
-            </div>
-          </div>
+        <div class="w-full flex items-start md:w-1/2 mb-4 md:mb-0">
+
+          <input-element 
+            label="TO:"
+            class="flex-grow w-1/2"
+            type="text"
+            id="to_name"
+            placeholder="Doe The Reciever"
+            v-model="mail.to_name"
+          />
+
+          <input-element 
+            class="flex-grow w-1/2"
+            type="text"
+            id="to_email"
+            placeholder="doe@receiver.i.am"
+            :error="errors.to_email"
+            v-model="mail.to_email"
+          />
+
         </div>
       </div>
 
       <div class="flex-grow mb-6">
-        <label for="subject">SUBJECT:</label>
-        <input
-          v-model="mail.subject"
-          placeholder="Excellent news! We got someone you've been looking for."
-          class="w-full"
+
+        <input-element 
+          label="SUBJECT:"
+          class="flex-grow w-full"
           type="text"
-          name=""
           id="subject"
+          placeholder="Excellent news! We got someone you've been looking for."
+          :error="errors.subject"
+          v-model="mail.subject"
         />
-        <span class="text-sm text-red-700 p-2" v-if="errors.subject">{{
-          errors.subject[0]
-        }}</span>
+
       </div>
 
       <client-only>
@@ -137,13 +122,15 @@
 </template>
 
 <script>
-import Editor from "@/components/Editor";
+import Editor from '@/components/Editor'
+import InputElement from '@/components/InputElement'
 import AttachmentsList from '@/components/AttachmentsList'
 import SuccessCheckmark from '@/components/SuccessCheckmark'
 
 export default {
   components: {
     Editor,
+    InputElement,
     AttachmentsList,
     SuccessCheckmark,
   },

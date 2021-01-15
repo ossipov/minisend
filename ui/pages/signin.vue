@@ -18,33 +18,23 @@
         for a new account
       </div>
 
-      <div class="mb-4 w-full">
-        <label for="email" class="block">Email</label>
-        <input
-          v-model="email"
-          class="w-full"
-          type="text"
-          name="email"
-          id="email"
-        />
-        <span class="text-sm text-red-700 p-2" v-if="errors.email">{{
-          errors.email[0]
-        }}</span>
-      </div>
+      <input-element 
+        label="Email:"
+        class="mb-4 w-full"
+        type="email"
+        id="email"
+        :error="errors.email"
+        v-model="email"
+      />
 
-      <div class="mb-6 w-full">
-        <label for="password" class="block">Password</label>
-        <input
-          type="password"
-          name="password"
-          class="w-full"
-          id="password"
-          v-model="password"
-        />
-        <span class="text-sm text-red-700 p-2" v-if="errors.password">{{
-          errors.password[0]
-        }}</span>
-      </div>
+      <input-element 
+        label="Password:"
+        class="mb-6 w-full"
+        type="password"
+        id="password"
+        :error="errors.password"
+        v-model="password"
+      />
 
       <button
         @click="signin()"
@@ -63,10 +53,15 @@
 </template>
 
 <script>
+import InputElement from '@/components/InputElement'
+
 export default {
   layout: "empty",
   // middleware: 'auth',
   // auth: 'guest',
+  component: {
+    InputElement,
+  },
   data() {
     return {
       email: "",
